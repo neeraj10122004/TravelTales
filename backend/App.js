@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { PORT, MONGOURL } = require('./auth');
+const { PORT, MONGOURL } = require('./Auth');
 const User = require('./models/Usermodel');
 const Post = require('./models/Postmodel');
 
@@ -35,12 +35,15 @@ app.post('/user', async (req, res) => {
 // Create Post
 app.post('/post', async (req, res) => {
     const { description, labels, user } = req.body;
+
     try {
+        // Create and save the post
         const post = new Post({ description, labels, user });
         await post.save();
 
+        // Update the user's posts array
         await User.findByIdAndUpdate(
-            user,
+            user, // No need for ObjectId conversion
             { $push: { posts: post._id } },
             { new: true }
         );
@@ -51,6 +54,7 @@ app.post('/post', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 
 // Like Post
 app.post('/like', async (req, res) => {
