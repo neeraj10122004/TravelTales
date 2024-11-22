@@ -1,267 +1,76 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const {PORT,MONGOURL} = require('./auth')
-mongoose.connect(MONGOURL)
-const User = require('./models/Usermodel')
-const Post = require('./models/Postmodel')
-const app = express()
+const express = require('express');
+const mongoose = require('mongoose');
+const { PORT, MONGOURL } = require('./auth');
+const User = require('./models/Usermodel');
+const Post = require('./models/Postmodel');
 
-app.use(express.json())
-app.listen(PORT,()=>{
-    console.log(`listening on post ${PORT}`)
-})
+mongoose.connect(MONGOURL);
 
-app.post('/', async (req,res)=>{
-    const {email,name} = req.body
-    try{
-        let user = await User.findOne({email: email})
+const app = express();
+app.use(express.json());
 
-        if(!user){
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});
 
-            let user = new User({email,name})
-
-            await user.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("user exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-
-app.post('/post', async (req,res)=>{
-    const {placename,placerating,placelikes} = req.body
-    try{
-        let place = await Place.findOne({placeName:placename})
-
-        if(!place){
-
-            let place = new Place({ placeName:placename,placeRating:placerating,likes:placelikes})
-
-            await place.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("data exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-
-app.post('/attraction', async (req,res)=>{
-    const {attractionname,description,rating} = req.body
-    try{
-        let attraction = await Attraction.findOne({attractionName:attractionname})
-
-        if(!attraction){
-
-            let attraction = new Attraction({ attractionName:attractionname,description:description,rating:rating})
-
-            await attraction.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("data exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-app.post('/food', async (req,res)=>{
-    const {foodname,fooddescription,cost,rating,resturantdetails} = req.body
-    try{
-        let food = await Food.findOne({foodName: foodname})
-
-        if(!food){
-
-            let food = new Food({ foodName : foodname,foodDescription : fooddescription,cost: cost,rating : rating,resturantDetails: resturantdetails})
-
-            await food.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("data exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-app.post('/guide', async (req,res)=>{
-    const {name,experience,rating,cost} = req.body
-    try{
-        let guide = await Guide.findOne({guidename : name})
-
-        if(!guide){
-
-            let guide = new Guide({ guidename : name,experience : experience ,rating : rating,cost : cost})
-
-            await guide.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("data exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-
-app.post('/transport', async (req,res)=>{
-    const {description,cost,rating,owner} = req.body
-    try{
-        let transport = await Transport.findOne({transportDescription : description})
-
-        if(!transport){
-
-            let transport = new Transport({ transportDescription : description,cost : cost ,rating : rating,ownerDetails : owner})
-
-            await transport.save()
-
-            res.send("Success")
-
-        }
-        else{
-            res.send("data exists")
-        }
-    }
-    catch{
-        res.send("Server Error")
-    }
-    
-})
-
-
-
-app.post('/flight', async (req, res) => {
-    const { airline, departure, destination, price, departureTime, arrivalTime } = req.body;
-
+// Create User
+app.post('/user', async (req, res) => {
+    const { email, name } = req.body;
     try {
-        let flight = await Flight.findOne({ airline, departure, destination, departureTime });
+        let user = await User.findOne({ email });
 
-        if (!flight) {
-            let newFlight = new Flight({
-                airline,
-                departure,
-                destination,
-                price,
-                departureTime,
-                arrivalTime
-            });
-
-            await newFlight.save();
-            res.send("Flight added successfully");
+        if (!user) {
+            user = new User({ email, name });
+            await user.save();
+            res.status(201).send('User created successfully');
         } else {
-            res.send("Flight already exists");
+            res.status(400).send('User already exists');
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server Error");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
     }
 });
 
-
-
-app.post('/hotel', async (req, res) => {
-    const { name, location, rating, amenities, pricePerNight, availability } = req.body;
-
+// Create Post
+app.post('/post', async (req, res) => {
+    const { description, labels, user } = req.body;
     try {
-    
-        const newHotel = new Hotel({
-            name,
-            location,
-            rating,
-            amenities,
-            pricePerNight,
-            availability,
-        });
+        const post = new Post({ description, labels, user });
+        await post.save();
 
-        
-        await newHotel.save();
-        res.status(201).send("Hotel added successfully");
-    } catch (error) {
-        console.error(error); 
-        res.status(500).send("Server Error");
+        await User.findByIdAndUpdate(
+            user,
+            { $push: { posts: post._id } },
+            { new: true }
+        );
+
+        res.status(201).send('Post created successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
     }
 });
 
-
-app.get('/hotel', async (req, res) => {
+// Like Post
+app.post('/like', async (req, res) => {
+    const { id, user } = req.body;
     try {
-    
-        const hotel = await Hotel.find();
-        res.status(200).json(hotels);
-    } catch (error) {
-        console.error(error); 
-        res.status(500).send("Server Error");
-    }
-});
+        const post = await Post.findByIdAndUpdate(
+            id,
+            { $inc: { likes: 1 }, $push: { likedBy: user } },
+            { new: true }
+        );
 
-app.post('/booking', async (req, res) => {
-    const { userId, hotelId, checkInDate, checkOutDate, totalAmount } = req.body;
+        await User.findByIdAndUpdate(
+            user,
+            { $push: { liked: id } },
+            { new: true }
+        );
 
-    try {
-        
-        const newBooking = new Booking({
-            userId,
-            hotelId,
-            checkInDate,
-            checkOutDate,
-            totalAmount,
-        });
-
-        await newBooking.save();
-        res.status(201).send("Booking created successfully");
-    } catch (error) {
-        console.error(error); 
-        res.status(500).send("Server Error");
-    }
-});
-
-
-app.get('/booking', async (req, res) => {
-    try {
-        
-        const booking = await Booking.find().populate('userId').populate('hotelId');
-        res.status(200).json(booking);
-    } catch (error) {
-        console.error(error); 
-        res.status(500).send("Server Error");
-    }
-});
-
-
-app.get('/booking/:id', async (req, res) => {
-    try {
-        const booking = await Booking.findById(req.params.id).populate('userId').populate('hotelId');
-        if (!booking) {
-            return res.status(404).send("Booking not found");
-        }
-        res.status(200).json(booking);
-    } catch (error) {
-        console.error(error); 
-        res.status(500).send("Server Error");
+        res.status(200).send('Post liked successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
     }
 });
