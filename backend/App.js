@@ -38,7 +38,8 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
-    callbackURL: "https://3000-neeraj10122-traveltales-5h8p3njh9sd.ws-us116.gitpod.io/callback"
+    callbackURL: "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/callback"
+    
 },
 async function(accessToken, refreshToken, profile, cb) {
     try {
@@ -52,9 +53,10 @@ async function(accessToken, refreshToken, profile, cb) {
                 email: profile.emails[0].value,
                 name: profile.displayName,
             });
-            userprofile=profile;
+            
             await user.save();
         }
+        userprofile=profile;
 
         return cb(null, user);
     } catch (error) {
@@ -66,10 +68,10 @@ async function(accessToken, refreshToken, profile, cb) {
 // Google OAuth Routes
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 app.get("/callback",
-    passport.authenticate("google", { failureRedirect: "https://5173-neeraj10122-traveltales-5h8p3njh9sd.ws-us116.gitpod.io/signin" }),
+    passport.authenticate("google", { failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/signin" }),
     (req, res) => {
         console.log(userprofile);
-        res.redirect("https://5173-neeraj10122-traveltales-5h8p3njh9sd.ws-us116.gitpod.io/")});
+        res.redirect("https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/")});
 
 // Routes
 // Create User

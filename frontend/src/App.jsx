@@ -8,6 +8,10 @@ import { Signin } from './pages/Signin'
 import { Userpage } from './pages/Userpage'
 
 function App() {
+  useEffect(() => {
+    window.open('');
+  }, [])
+  
   
   return (
     <>
