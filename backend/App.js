@@ -68,10 +68,10 @@ async function(accessToken, refreshToken, profile, cb) {
 // Google OAuth Routes
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 app.get("/callback",
-    passport.authenticate("google", { failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/signin" }),
+    passport.authenticate("google", { failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io" }),
     (req, res) => {
         console.log(userprofile);
-        res.redirect("https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/")});
+        res.redirect("https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/home")});
 
 // Routes
 // Create User
