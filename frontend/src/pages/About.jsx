@@ -1,10 +1,10 @@
 import React from 'react'
 import { Navbar } from '../components/Navbar'
 
-export const About = () => {
+export const About = ({mail,name,photo}) => {
   return (
     <div>
-      <Navbar loc="About"/>
+      <Navbar loc="About" name={name} photo={photo} />
 
     </div>
   )

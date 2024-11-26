@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     name: String,
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    liked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+    liked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    photourl: String
 });
 
 userSchema.plugin(findOrCreate);
