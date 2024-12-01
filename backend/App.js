@@ -17,7 +17,7 @@ mongoose.connect(MONGOURL, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const app = express();
 app.use(cors({
-    origin: 'https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io',
+    origin: 'https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io',
     credentials: true,
 }));
 app.use(express.static("public"));
@@ -46,7 +46,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
-    callbackURL: "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/callback"
+    callbackURL: "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/callback"
 }, async (accessToken, refreshToken, profile, cb) => {
     try {
         const email = profile.emails?.[0]?.value;
@@ -77,9 +77,9 @@ passport.use(new GoogleStrategy({
 // Routes
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 app.get("/callback", passport.authenticate("google", {
-    failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io",
+    failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io",
 }), (req, res) => {
-    const redirectUrl = `https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/home?name=${encodeURIComponent(
+    const redirectUrl = `https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/home?name=${encodeURIComponent(
         req.user.name
     )}&email=${encodeURIComponent(req.user.email)}`;
 

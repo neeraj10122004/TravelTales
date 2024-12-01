@@ -21,7 +21,7 @@ function App() {
 
         if (email) {
           const response = await axios.get(
-            "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us116.gitpod.io/user",
+            "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/user",
             { params: { email } }
           );
           setUser(response.data);
