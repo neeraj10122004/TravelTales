@@ -26,6 +26,7 @@ function App() {
           );
           setUser(response.data);
           setAuth(true); // Set authentication to true when data is successfully fetched
+          localStorage.setItem('user',umail)
         }
       } catch (error) {
         console.error("Error fetching user data:", error);

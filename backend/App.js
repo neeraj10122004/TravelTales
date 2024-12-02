@@ -79,10 +79,7 @@ app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "em
 app.get("/callback", passport.authenticate("google", {
     failureRedirect: "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io",
 }), (req, res) => {
-    const redirectUrl = `https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/home?name=${encodeURIComponent(
-        req.user.name
-    )}&email=${encodeURIComponent(req.user.email)}`;
-
+    const redirectUrl = `https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/home?email=${encodeURIComponent(req.user.email)}`;
     res.redirect(redirectUrl);
 });
 
@@ -106,6 +103,71 @@ app.get('/user', async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+app.get('/posts', async (req, res) => {
+    try {
+      const email = req.query.email || (req.user && req.user.email);
+  
+      if (!email) {
+        return res.status(400).json({ error: "Email not provided in the request" });
+      }
+  
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      // Check if user has posts
+      if (!user.posts || !Array.isArray(user.posts)) {
+        return res.status(200).json({ posts: [] }); // Return an empty array if no posts exist
+      }
+  
+      // Fetch posts
+      const userposts = await Promise.all(
+        user.posts.map(async (postId) => {
+          return await Post.findById(postId);
+        })
+      );
+  
+      res.status(200).json({ posts: userposts });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
+  app.get('/likedposts', async (req, res) => {
+    try {
+      const email = req.query.email || (req.user && req.user.email);
+  
+      if (!email) {
+        return res.status(400).json({ error: "Email not provided in the request" });
+      }
+  
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      // Check if user has posts
+      if (!user.liked || !Array.isArray(user.liked)) {
+        return res.status(200).json({ posts: [] }); // Return an empty array if no posts exist
+      }
+  
+      // Fetch posts
+      const userposts = await Promise.all(
+        user.posts.map(async (postId) => {
+          return await Post.findById(postId);
+        })
+      );
+  
+      res.status(200).json({ posts: userposts });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

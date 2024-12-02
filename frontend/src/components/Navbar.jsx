@@ -1,11 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 
 export const Navbar = ({ loc, name, photo }) => {
-  const handleLogout = () => {
-    // Implement your logout logic here
+  const handleLogout = async () => {
+    
+    localStorage.clear();
+  
+    window.location.href = "https://5173-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io";
+    
+    
+  
     console.log("User logged out");
   };
+  
 
   return (
     <div className="flex items-center justify-between p-10">
