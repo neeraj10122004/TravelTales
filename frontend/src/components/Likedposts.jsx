@@ -5,20 +5,21 @@ export const Likedposts = ({mail}) => {
   const [posts, setPosts] = useState([]);
   
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/likedpost",
-          { params: { mail } }
+          "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/likedposts",
+          { params: { email: mail } } // Send email as query param
         );
-        setPosts(response.data); // Assuming response.data contains the posts array
+        setPosts(response.data.posts); // Use "posts" from the server response
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching posts:", error);
       }
     };
 
-    fetchUserData();
-  }, [mail]); 
+    fetchPosts();
+  }, []);
+  
   return (
     <div>
       <h1>LikedPosts</h1>

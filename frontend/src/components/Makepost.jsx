@@ -1,19 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
+import axios from 'axios';
 
 export const Makepost = ({mail, makepost, setmakepost }) => {
   const [description, setdescription] = useState("")
   const [lables, setlables] = useState(['trip', 'travel']);
   const [temp, settemp] = useState("")
+  const [email, setemail] = useState(mail)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setmakepost(false); // Set makepost to false after 2 seconds
-    }, 20000);
-
-    // Cleanup function to clear timeout if the component is unmounted before the timeout
-    return () => clearTimeout(timer);
-  }, [setmakepost]); // Depend on setmakepost to handle the state correctly
   const handleclick = ()=>{
     if(temp.length !==0 ){
       setlables([...lables,temp])
@@ -21,7 +15,16 @@ export const Makepost = ({mail, makepost, setmakepost }) => {
     }
   }
   const sendpost = async () =>{
-    
+    try{
+      const response = await axios.post(
+        "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/post",
+        { email: mail, description: description, labels: lables }
+      );
+    }
+    catch(error){
+      console.error("Error fetching user data:", error);
+    }
+    setmakepost(false);
   }
 
   return (

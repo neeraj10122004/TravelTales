@@ -22,9 +22,9 @@ export const Userpage = ({mail,name,photo}) => {
 
   return (
     
-    <div>
+    <div className='mb-10'>
 
-      <div className='fixed w-svw sticky'>
+      <div className='fixed w-svw z-40 bg-white'>
         <Navbar loc="Userpage" name={name} photo={photo}/>
         { 
       makepost && (
@@ -38,18 +38,18 @@ export const Userpage = ({mail,name,photo}) => {
         )
       }
         <Userdata name={name} photo={photo} mail={mail} />
-        <div className="flex items-center justify-center gap-10 pt-4">
+        <div className="flex items-center justify-center gap-10 pt-3">
         
           <button
             className={`rounded-full ${
-              tog == false ? "bg-gray-100 p-3" : ""
+              tog == false ? "bg-gray-100 p-2" : ""
             } p`} onClick={handleClick2}
           >
             Posts
           </button>
           <button
             className={`rounded-full ${
-              tog == true ? "bg-gray-100 p-3" : ""
+              tog == true ? "bg-gray-100 p-2" : ""
             } lp`} onClick={handleClick1}
           >
             LikedPosts
@@ -57,7 +57,7 @@ export const Userpage = ({mail,name,photo}) => {
         </div>
       </div>
 
-      <div className='overflow-y-auto'>
+      <div  className='flex justify-center items-center overflow-y-auto pt-96 '>
       { !tog && <Posts mail={mail} /> }
       { tog && <Likedposts mail={mail} />}
       </div>

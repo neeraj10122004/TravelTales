@@ -103,47 +103,43 @@ app.get('/user', async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
 app.get('/posts', async (req, res) => {
-    try {
-      const email = req.query.email || (req.user && req.user.email);
-  
-      if (!email) {
-        return res.status(400).json({ error: "Email not provided in the request" });
-      }
-  
-      const user = await User.findOne({ email });
-  
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-  
-      // Check if user has posts
-      if (!user.posts || !Array.isArray(user.posts)) {
-        return res.status(200).json({ posts: [] }); // Return an empty array if no posts exist
-      }
-  
-      // Fetch posts
-      const userposts = await Promise.all(
-        user.posts.map(async (postId) => {
-          return await Post.findById(postId);
-        })
-      );
-  
-      res.status(200).json({ posts: userposts });
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      res.status(500).json({ error: "Internal server error" });
+  try {
+    const { email } = req.query; // Access email from query parameters
+    console.log(`Get request from ${email}`);
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-  });
+
+    // Check if user has posts
+    if (!user.posts || !Array.isArray(user.posts)) {
+      return res.status(200).json({ posts: [] }); // Return an empty array if no posts exist
+    }
+
+    // Fetch posts
+    const userposts = await Promise.all(
+      user.posts.map(async (postId) => await Post.findById(postId))
+    );
+
+    res.status(200).json({ posts: userposts });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
   
   app.get('/likedposts', async (req, res) => {
     try {
-      const email = req.query.email || (req.user && req.user.email);
+      const { email } = req.query; // Access email from query parameters
+      console.log(`Get liked request from ${email}`);
   
-      if (!email) {
-        return res.status(400).json({ error: "Email not provided in the request" });
-      }
-  
+      // Find the user by email
       const user = await User.findOne({ email });
   
       if (!user) {
@@ -157,9 +153,7 @@ app.get('/posts', async (req, res) => {
   
       // Fetch posts
       const userposts = await Promise.all(
-        user.posts.map(async (postId) => {
-          return await Post.findById(postId);
-        })
+        user.liked.map(async (postId) => await Post.findById(postId))
       );
   
       res.status(200).json({ posts: userposts });
@@ -171,31 +165,24 @@ app.get('/posts', async (req, res) => {
 
   app.post('/post', async (req, res) => {
     try {
-      const email = req.query.email || (req.user && req.user.email);
-      const description = req.query.description;
-      const labels = req.query.labels;
-  
+      console.log("new post")
+      const {email,description, labels}  = req.body;
       // Validate email and post data
-      if (!email) {
-        return res.status(400).json({ error: "Email not provided in the request" });
-      }
-      if (!description) {
-        return res.status(400).json({ error: "Description is required" });
-      }
+      console.log(req.body);
+
+      
   
       // Find the user by email
       const user = await User.findOne({ email });
-  
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
+      console.log(user)
   
       // Create a new post
       const newPost = new Post({
         description: description,
-        labels: Array.isArray(labels) ? labels : [labels], // Ensure labels is an array
+        labels: labels, // Ensure labels is an array
         user: user._id, // Associate post with the user's ID
       });
+      console.log(newPost)
   
       // Save the post to the database
       const savedPost = await newPost.save();
@@ -203,7 +190,7 @@ app.get('/posts', async (req, res) => {
       // Add the post to the user's posts array
       user.posts.push(savedPost._id);
       await user.save();
-  
+      console.log(user.posts)
       res.status(200).json({ message: "done", post: savedPost });
     } catch (error) {
       console.error("Error creating post:", error);

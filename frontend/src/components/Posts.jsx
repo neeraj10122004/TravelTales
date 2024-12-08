@@ -5,20 +5,20 @@ export const Posts = ({ mail }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchPosts = async () => {
       try {
         const response = await axios.get(
-          "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/post",
-          { params: { mail } }
+          "https://3000-neeraj10122-traveltales-40o2lf52eu2.ws-us117.gitpod.io/posts",
+          { params: { email: mail } } // Send email as query param
         );
-        setPosts(response.data); // Assuming response.data contains the posts array
+        setPosts(response.data.posts); // Use "posts" from the server response
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching posts:", error);
       }
     };
 
-    fetchUserData();
-  }, [mail]); // Include mail in the dependency array
+    fetchPosts();
+  }, []);
 
   return (
     <div>
@@ -26,7 +26,7 @@ export const Posts = ({ mail }) => {
       {posts.length > 0 ? (
         posts.map((post, index) => (
           <div key={index}>
-            <h2>{post.labels}</h2>
+            <h2>{post.labels.join(", ")}</h2> {/* Join labels array */}
             <h2>{post.likes}</h2>
             <p>{post.description}</p>
           </div>
