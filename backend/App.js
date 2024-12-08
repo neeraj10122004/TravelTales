@@ -169,5 +169,48 @@ app.get('/posts', async (req, res) => {
     }
   });
 
+  app.post('/post', async (req, res) => {
+    try {
+      const email = req.query.email || (req.user && req.user.email);
+      const description = req.query.description;
+      const labels = req.query.labels;
+  
+      // Validate email and post data
+      if (!email) {
+        return res.status(400).json({ error: "Email not provided in the request" });
+      }
+      if (!description) {
+        return res.status(400).json({ error: "Description is required" });
+      }
+  
+      // Find the user by email
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      // Create a new post
+      const newPost = new Post({
+        description: description,
+        labels: Array.isArray(labels) ? labels : [labels], // Ensure labels is an array
+        user: user._id, // Associate post with the user's ID
+      });
+  
+      // Save the post to the database
+      const savedPost = await newPost.save();
+  
+      // Add the post to the user's posts array
+      user.posts.push(savedPost._id);
+      await user.save();
+  
+      res.status(200).json({ message: "done", post: savedPost });
+    } catch (error) {
+      console.error("Error creating post:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
+
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
