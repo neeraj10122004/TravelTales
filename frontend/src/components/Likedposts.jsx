@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Displaypost } from './Displaypost';
 
 export const Likedposts = ({mail}) => {
   const [posts, setPosts] = useState([]);
@@ -25,11 +26,7 @@ export const Likedposts = ({mail}) => {
       <h1>LikedPosts</h1>
       {posts.length > 0 ? (
         posts.map((post, index) => (
-          <div key={index}>
-            <h2>{post.labels}</h2>
-            <h2>{post.likes}</h2>
-            <p>{post.description}</p>
-          </div>
+          <Displaypost key={index} email={mail} post={post} />
         ))
       ) : (
         <p>No posts available</p>
