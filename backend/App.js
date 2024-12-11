@@ -104,6 +104,33 @@ app.get('/user', async (req, res) => {
     }
 });
 
+app.get('/userid', async (req, res) => {
+  try {
+      const userId = req.query.user || req.body.user;
+      console.log(userId)
+      if (!userId) {
+          return res.status(400).json({ error: "User ID not provided in the request" });
+      }
+
+      // Validate the ID format (for MongoDB ObjectId)
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ error: "Invalid User ID format" });
+      }
+
+      const user = await User.findById(userId); // Fetch only necessary fields
+
+      if (!user) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json({ name: user.name, photourl: user.photourl });
+  } catch (error) {
+      console.error("Error fetching user data:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 app.get('/posts', async (req, res) => {
   try {
     const { email } = req.query; // Access email from query parameters
@@ -129,6 +156,18 @@ app.get('/posts', async (req, res) => {
     res.status(200).json({ posts: userposts });
   } catch (error) {
     console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get('/allposts', async (req, res) => {
+  try {
+    const posts = await Post.find({});
+
+    return res.status(200).json({ posts });
+
+  } catch (error) {
+    console.error("Error fetching posts data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
