@@ -49,7 +49,7 @@ export const Home = ({ mail, name, photo }) => {
 
       <div
         className="p-4 fixed w-14 h-14 bottom-10 right-10 bg-slate-600 text-white hover:bg-slate-700 cursor-pointer shadow-lg rounded-full flex justify-center items-center"
-        onClick={writepost}
+        onClick={writePost}
       >
         <FaPlus size={30} className="text-white" /> {/* White Plus Icon */}
       </div>

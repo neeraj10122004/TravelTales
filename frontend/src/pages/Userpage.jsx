@@ -63,9 +63,11 @@ export const Userpage = ({mail,name,photo}) => {
       </div>
       
       <div
-        className=" p-4 fixed w-10 h-10 bottom-10 right-10 bg-slate-600 text-white hover:bg-slate-700 cursor-pointer shadow-lg rounded-full"
+        className="p-4 fixed w-14 h-14 bottom-10 right-10 bg-slate-600 text-white hover:bg-slate-700 cursor-pointer shadow-lg rounded-full flex justify-center items-center"
         onClick={writepost}
-      ></div>
+      >
+        <FaPlus size={30} className="text-white" /> {/* White Plus Icon */}
+      </div>
     </div>
   )
 }
