@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar';
 import axios from 'axios';
 import { Makepost } from '../components/Makepost';
 import { Homedisplay } from '../components/Homedisplay';
-import { FaRegPlusSquare } from 'react-icons/fa'; // Import Plus Icon
+import { FaPlus } from "react-icons/fa";// Import Plus Icon
 
 export const Home = ({ mail, name, photo }) => {
   const [makepost, setMakepost] = useState(false);
@@ -51,7 +51,7 @@ export const Home = ({ mail, name, photo }) => {
         className="p-4 fixed w-14 h-14 bottom-10 right-10 bg-slate-600 text-white hover:bg-slate-700 cursor-pointer shadow-lg rounded-full flex justify-center items-center"
         onClick={writepost}
       >
-        <FaRegPlusSquare size={30} className="text-white" /> {/* White Plus Icon */}
+        <FaPlus size={30} className="text-white" /> {/* White Plus Icon */}
       </div>
     </div>
   );
