@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Posts } from '../components/Posts'
 import { Likedposts } from '../components/Likedposts'
 import { Makepost } from '../components/Makepost';
+import { FaPlus } from "react-icons/fa";// Import Plus Icon
 
 export const Userpage = ({mail,name,photo}) => {
   const [tog, settog] = useState(false)
