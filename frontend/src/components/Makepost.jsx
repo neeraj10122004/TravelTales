@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
+
+
 export const Makepost = ({mail, makepost, setmakepost }) => {
   const [description, setdescription] = useState("")
   const [lables, setlables] = useState(['trip', 'travel']);
@@ -26,6 +28,7 @@ export const Makepost = ({mail, makepost, setmakepost }) => {
     }
     setmakepost(false);
   }
+  
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg w-96 flex flex-col justify-center items-center">
